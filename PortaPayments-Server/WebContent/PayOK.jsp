@@ -10,6 +10,8 @@
 <div style="background:#336633; width: 100%; font-size: 18pt; font-weight: bold; color: white; text-align: center; padding: 5px">PortaPayments</div>
 <center>
 <p>Your payment has been completed.</p>
+<p><a href="#" onClick="window.PortaPayments.finish()">Select here to continue</a></p>
+<p>&nbsp;</p>
 <%@ page import="java.util.*, java.io.*, java.net.*, java.security.*, java.math.*, java.text.*" %>
 <%
 // AdMob Publisher Code
