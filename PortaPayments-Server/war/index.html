@@ -1,27 +1,148 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
-
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Hello App Engine</title>
-  </head>
+<head>
+<title>PortaPayments - Making Payments Portable</title>
+<link rel="icon" type="image/vnd.microsoft.icon" href="http://portapayments.com/favicon.ico"> 
+<link rel="icon" type="image/png" href="http://portapayments.com/favicon.png"> 
+<link href="http://static.portapayments.com/css/desktop.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+function generateCode() {
+ document.all.codeimage.src = 'CreateUniversalCode?c='+document.forms[0].c.value+
+								'&a0='+document.forms[0].a0.value+'&r0='+document.forms[0].r0.value+
+								'&a1='+document.forms[0].a1.value+'&r1='+document.forms[0].r1.value+
+								'&a2='+document.forms[0].a2.value+'&r2='+document.forms[0].r2.value+
+								'&a3='+document.forms[0].a3.value+'&r3='+document.forms[0].r3.value+
+								'&a4='+document.forms[0].a4.value+'&r4='+document.forms[0].r4.value+
+								'&a5='+document.forms[0].a5.value+'&r5='+document.forms[0].r5.value;
+}
 
-  <body>
-    <h1>Hello App Engine!</h1>
-	
-    <table>
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Available Servlets:</td>        
-      </tr>
-      <tr>
-        <td><a href="portapayments_server">PortaPayments_Server</a></td>
-      </tr>
-    </table>
-  </body>
+function clear(id)
+{
+	if (document.getElementById)
+	{
+		document.getElementById("r"+id).value=''
+		document.getElementById("a"+id).value=''
+	}
+} 
+</script>
+</head>
+<body>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td rowspan="2" width="79"><img src="http://static.portapayments.com/images/pp_qrcode.png" width="77" height="77"></td>
+		<td bgcolor="003366" class="title"><a href="http://www.portapayments.com/" style="text-decoration: none; color: white">PortaPayments</a></td>
+	</tr>
+	<tr>
+		<td bgcolor="336699" class="strapline">Making Payments Portable</td>
+	</tr>
+</table>
+<div class="mobilelink">[<a href="http://portapayments.mobi">Mobile Version</a>]</div>
+<div class="colmask">
+<div class="colleft">
+<div class="col1wrap">
+<div class="col1">
+<h3>What is this?</h3>
+<p>PortaPayments is a free "Scan & Pay" solution which allows customers to purchase your goods by scanning a 3D bar code with their 'phone.
+
+<p>You can generate PortaPayments codes using the code generator on the right or the on-phone application and include them in Advertising material, Invoices, or even put them in the window of a traditional bricks and mortar store so people can buy your goods even when your store is closed.
+
+<p>You can see a demonstration of PortaPayments in action in the video below, and if you'd like to help support the development of PortaPayments please vote for it in the PayPalX Developers Challenge by following the voting instructions at <a href="http://bit.ly/9ajgbu" target="_blank">http://bit.ly/9ajgbu</a>.
+If you'd like some more information please see <a href="faq.html">the frequently asked questions page</a>.</p>
+
+<center><object width="560" height="340"><param name="movie" value="http://www.youtube.com/v/sOYiADJWG9I&hl=en_GB&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/sOYiADJWG9I&hl=en_GB&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="560" height="340"></embed></object></center>
+</div>
+</div>
+<div class="col2">
+<div class="downloads">
+	<div class="side-title">Downloads</div>
+	<p><a href="http://static.portapayments.com/PortaPayments.apk">Android Application</a></p>
+</div>
+<div class="codegen">
+	<div class="side-title">Code Generator</div>
+	<form onSubmit="generateCode(); return true;" name="genform">
+		<p>Currency<br/>
+		<select name="c">
+			<option value="USD">U.S. Dollar</option>
+			<option value="EUR">Euro</option>
+			<option value="GBP">Pounds Sterling</option>
+			<option value="AUD">Australian Dollar</option>
+			<option value="CAD">Canadian Dollar</option>
+			<option value="CZK">Czech Koruna</option>
+			<option value="DKK">Danish Krone</option>
+			<option value="HKD">Hong Kong Dollar</option>
+			<option value="HUF">Hungarian Forint</option>
+			<option value="ILS">Israeli New Sheqel</option>
+			<option value="JPY">Japanese Yen</option>
+			<option value="MXN">Mexican Peso</option>
+			<option value="NOK">Norwegian Krone</option>
+			<option value="NZD">New Zealand Dollar</option>
+			<option value="PHP">Philippine Peso</option>
+			<option value="PLN">Polish Zloty</option>
+			<option value="SGD">Singapore Dollar</option>
+			<option value="SEK">Swedish Krona</option>
+			<option value="CHF">Swiss Franc</option>
+			<option value="TWD">Taiwan New Dollar</option>
+			<option value="THB">Thai Baht</option>
+		</select></p>
+		<table width="100%">
+		<tr>
+			<td colspan="2">Recipient, Amount</td>
+		</tr>
+		<tr>
+			<td><input type="text" name="r0" value="me@my.com" size="15"/>, <input type="text" name="a0" value="1.23" align="right" size="4"></td>
+			<td>
+				<a href="javascript:clear(0)" id="clear_0" style="text-decoration:none">x</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" name="r1" size="15"/>, <input type="text" name="a1" align="right" size="4">
+			</td>
+			<td>
+				<a href="javascript:clear(1)" id="clear_1" style="text-decoration:none">x</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" name="r2" size="15"/>, <input type="text" name="a2" align="right" size="4">
+			</td>
+			<td>
+				<a href="javascript:clear(2)" id="clear_2" style="text-decoration:none">x</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" name="r3" size="15"/>, <input type="text" name="a3" align="right" size="4">
+			</td>
+			<td>
+				<a href="javascript:clear(3)" id="clear_3" style="text-decoration:none">x</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" name="r4" size="15"/>, <input type="text" name="a4" align="right" size="4">
+			</td>
+			<td>
+				<a href="javascript:clear(4)" id="clear_4" style="text-decoration:none">x</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" name="r5" size="15"/>, <input type="text" name="a5" align="right" size="4">
+			</td>
+			<td>
+				<a href="javascript:clear(5)" id="clear_5" style="text-decoration:none">x</a>
+			</td>
+		</tr>
+		</table>
+		<p><a href="javascript:generateCode()">Generate Code</a></p>
+	</form>
+	<img width="192" height="192" id="codeimage" src="http://static.portapayments.com/images/blankcode.png"/>
+</div>
+<p>&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="footer">PortaPayments is owned and operated by <a href="http://funkyandroid.com">Funky Android Ltd.</a><br/>
+This website and its' contents are (c)Copyright 2010 Funky Android Ltd., All Rights Reserved.</div>
+</body>
 </html>
