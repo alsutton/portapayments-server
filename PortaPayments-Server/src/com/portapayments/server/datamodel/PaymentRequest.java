@@ -1,13 +1,9 @@
 package com.portapayments.server.datamodel;
 
-import java.util.List;
-
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -40,11 +36,16 @@ public class PaymentRequest {
     private PaymentGateway gateway;
     
     /**
-     * The list of recipients for the payment
+     * The email address of the recipient
      */
     
-    @OneToMany(mappedBy="paymentRequest", fetch = FetchType.LAZY)
-    private List<Recipient> recipients;
+    private String recipient;
+
+    /**
+     * The amount his recipient will receive
+     */
+    
+    private String amount;
 
 	public Key getKey() {
 		return key;
@@ -78,11 +79,19 @@ public class PaymentRequest {
 		this.memo = memo;
 	}
 
-	public List<Recipient> getRecipients() {
-		return recipients;
+	public String getRecipient() {
+		return recipient;
 	}
 
-	public void setRecipients(List<Recipient> recipients) {
-		this.recipients = recipients;
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
 	}
 }
