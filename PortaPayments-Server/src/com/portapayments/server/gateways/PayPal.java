@@ -8,14 +8,12 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.portapayments.server.datamodel.PaymentRequest;
-import com.portapayments.server.datamodel.Recipient;
 
 public class PayPal {
 
@@ -27,22 +25,37 @@ public class PayPal {
 
 	/**
 	 * Method to make a payment between a sender and receiver
+	 * @throws IOException 
 	 * 
 	 * @throws IOException 
 	 * @throws ClientProtocolException 
 	 */
 	
-	
-	public static String makePayment(final String sender, final PaymentRequest request ) 
+	public static String makePayment(final String sender, final PaymentRequest request) 
 		throws IOException {
+		return makePayment(sender, request, request.getAmount());
+	}
+
+	/**
+	 * Method to make a payment between a sender and receiver
+	 * 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 */
 	
+	public static String makePayment(final String sender, final PaymentRequest request, final String amountString ) 
+		throws IOException {
+		double amount = Double.parseDouble(amountString)*100;
+		amount = Math.ceil(amount);
+		amount /= 100;
+		
 		Properties headers = new Properties();		
-		headers.put("X-PAYPAL-SECURITY-USERID", "al.sutton_api1.alsutton.com"); 
-		headers.put("X-PAYPAL-SECURITY-PASSWORD","SEFL5JWBMZK5XBT3"); 
-		headers.put("X-PAYPAL-SECURITY-SIGNATURE","A7t6WVepwZEodQtX6.nl6AH70Jx2AQW-ulTKK1KkONrFywEm0ADrXmqi");
+		headers.put("X-PAYPAL-SECURITY-USERID", "payments_api1.funkyandroid.com"); 
+		headers.put("X-PAYPAL-SECURITY-PASSWORD","8PHXACWXATXPW9QA"); 
+		headers.put("X-PAYPAL-SECURITY-SIGNATURE","A3F8ibcD.y4vlg9hgBrTNX-nZaVPAF0lgltCEaVuHALO5vzjj6fhxS8I");
 		headers.put("X-PAYPAL-REQUEST-DATA-FORMAT", "NV"); 
 		headers.put("X-PAYPAL-RESPONSE-DATA-FORMAT", "NV");  
-		headers.put("X-PAYPAL-APPLICATION-ID", "APP-98D95394ER368501R");
+		headers.put("X-PAYPAL-APPLICATION-ID", "APP-80W284485P519543T");
 		
 
 		StringBuilder requestBody = new StringBuilder();
@@ -52,20 +65,19 @@ public class PayPal {
 		requestBody.append(request.getCurrency());
 		requestBody.append("&feesPayer=EACHRECEIVER");
 		
-		List<Recipient> recipients = request.getRecipients();
-		for(int i = 0 ; i < recipients.size() ; i++) {
-			Recipient details = recipients.get(i);
-			requestBody.append("&receiverList.receiver(");
-			requestBody.append(i);
-			requestBody.append(").email=");
-			requestBody.append(details.getEmailAddress());
-			requestBody.append("&receiverList.receiver(");
-			requestBody.append(i);
-			requestBody.append(").amount=");
-			requestBody.append(details.getAmount());
-		}
-		requestBody.append("&returnUrl=http://postpay.portapayments.mobi/ppm/PayOK.jsp");
-		requestBody.append("&cancelUrl=http://postpay.portapayments.mobi/ppm/PayCancelled.jsp");
+		requestBody.append("&receiverList.receiver(0).email=");
+		requestBody.append(request.getRecipient());
+		requestBody.append("&receiverList.receiver(0).amount=");
+		requestBody.append(amount);
+		
+		double fees = (amount*100)/400;
+		fees = Math.ceil(fees);
+		fees /= 100;
+		
+		requestBody.append("&receiverList.receiver(1).email=payments@funkyandroid.com&receiverList.receiver(1).amount=");
+		requestBody.append(fees);
+		requestBody.append("&receiverList.receiver(1).primary=false&returnUrl=http://appengine.portapayments.mobi/ppm/PayOK.jsp");
+		requestBody.append("&cancelUrl=http://appengine.portapayments.mobi/ppm/PayCancelled.jsp");
 		requestBody.append("&requestEnvelope.errorLanguage=en_US");
 		requestBody.append("&clientDetails.ipAddress=127.0.0.1");
 		requestBody.append("&memo="+request.getMemo());
