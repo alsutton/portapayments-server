@@ -10,16 +10,32 @@
 		<servlet-class>com.portapayments.server.CreateCodeServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>CreateUniversalCode</servlet-name>
+		<servlet-class>com.portapayments.server.CreateUniversalCodeServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>CreateMobileCode</servlet-name>
 		<servlet-class>com.portapayments.server.CreateMobileCodeServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>PayUniversalCode</servlet-name>
+		<servlet-class>com.portapayments.server.PayUniversalCodeServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CreateCode</servlet-name>
 		<url-pattern>/CreateCode</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>CreateUniversalCode</servlet-name>
+		<url-pattern>/CreateUniversalCode</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>CreateMobileCode</servlet-name>
 		<url-pattern>/CreateMobileCode</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PayUniversalCode</servlet-name>
+		<url-pattern>/PayUniversalCode</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
