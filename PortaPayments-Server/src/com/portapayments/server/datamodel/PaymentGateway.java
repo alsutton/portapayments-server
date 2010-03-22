@@ -3,7 +3,6 @@ package com.portapayments.server.datamodel;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue; 
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +35,7 @@ public class PaymentGateway {
     /**
      * The payment requests configured for this gatepay
      */
-    @OneToMany(mappedBy="gateway", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="gateway")
     private List<PaymentRequest> paymentRequests;
     
 	public Key getKey() {
