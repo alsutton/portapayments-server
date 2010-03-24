@@ -57,19 +57,26 @@ public class PayUniversalCodeServlet extends HttpServlet {
 				return;				
 			}
 			
+			long amount;
 			if(paymentRequest.getAmount() == null) {
+					final String amountParameter = request.getParameter("amount");
+					if(amountParameter == null) {
+						sendToEnterAmountPage(request, response, paymentRequest);
+						return;
+					}
+					 
 				try {
-					Currency currency = Currency.getInstance(paymentRequest.getCurrency());
-					request.setAttribute("Currency", currency.getSymbol(request.getLocale()));					
-				} catch(Exception ex) {
-					request.setAttribute("Currency", paymentRequest.getCurrency());
+					amount = parseAmount(amountParameter);
+				} catch (Exception ex) {
+					request.setAttribute("ErrorMessage", "The amount you entered is not valid.");
+					sendToEnterAmountPage(request,response,paymentRequest);
+					return;
 				}
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(ENTER_AMOUNT_URL);
-				dispatcher.forward(request, response);
-				return;
+			} else {
+				amount = paymentRequest.getAmount();
 			}
 
-			response.sendRedirect(PayPal.getPaymentRedirect(u, paymentRequest, request.getRemoteAddr()));
+			response.sendRedirect(PayPal.getPaymentRedirect(u, paymentRequest, amount, request.getRemoteAddr()));
 		} catch(PayPalExceptionWithErrorCode ex) {
 			super.log("Exception for k:"+k+" + i:"+i+" c : "+ex.getErrorCode(), ex);
 			response.sendRedirect(ERROR_URL);			
@@ -78,7 +85,54 @@ public class PayUniversalCodeServlet extends HttpServlet {
 			response.sendRedirect(ERROR_URL);
 		} finally {
 			em.close();
+		}		
+	}
+	
+	/**
+	 * Convert an amount string into an amount long
+	 * 
+	 * @param amount The value as a string.
+	 * @return The value as a long.
+	 */
+	
+	private long parseAmount(final String amount) {
+		int pointIdx = amount.indexOf('.');
+		if(pointIdx == -1) {
+			long value = Long.parseLong(amount);
+			return value * 100;
 		}
 		
+		String major = amount.substring(0, pointIdx);
+		String minor = amount.substring(pointIdx+1);
+		if( minor.length() > 2) {
+			throw new RuntimeException("2 digit minor values only");
+		}
+		
+		long value = Long.parseLong(major) * 100;
+		value += Long.parseLong(minor);
+		return value;
+	}
+	
+	/**
+	 * Set up the neccessary items for the payment page
+	 * @throws IOException 
+	 * @throws ServletException 
+	 */
+	
+	private void sendToEnterAmountPage(final HttpServletRequest request,
+			final HttpServletResponse response, final PaymentRequest paymentRequest) 
+		throws ServletException, IOException {
+		final String currencyCode = paymentRequest.getCurrency();
+		if(currencyCode != null) {
+			request.setAttribute("CurrencyCode", currencyCode);
+			try {
+				Currency currency = Currency.getInstance(paymentRequest.getCurrency());
+				request.setAttribute("Currency", currency.getSymbol(request.getLocale()));					
+			} catch(Exception ex) {
+				request.setAttribute("Currency", paymentRequest.getCurrency());
+			}
+		}
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(ENTER_AMOUNT_URL);
+		dispatcher.forward(request, response);		
 	}
 }
