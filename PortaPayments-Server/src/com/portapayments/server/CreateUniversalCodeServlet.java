@@ -76,7 +76,7 @@ public class CreateUniversalCodeServlet extends HttpServlet {
 			paymentRecipient.setRecipient(recipient);
 
 			String amount = request.getParameter("a0");
-			if(amount != null && amount.length() >= 0) {
+			if(amount != null && amount.length() > 0) {
 				long amountValue = calculateAmount(amount);
 				paymentRecipient.setAmount(amountValue);
 				paymentRequest.setAmount(amountValue);
