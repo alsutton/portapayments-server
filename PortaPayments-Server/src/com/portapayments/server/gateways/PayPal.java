@@ -7,12 +7,14 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.portapayments.server.datamodel.PaymentRecipient;
 import com.portapayments.server.datamodel.PaymentRequest;
 
 public class PayPal {
@@ -21,7 +23,65 @@ public class PayPal {
 	 * The endpoint URL for paypal requests.
 	 */
 	
-	private static final String PAYPAL_URL = "https://svcs.paypal.com/AdaptivePayments/Pay";
+	private static final String PAYPAL_URL = "https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
+
+	/**
+	 * The URL stub for passing the payment authentication to PayPal
+	 */
+
+	private final static String PAY_URL_STUB = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey=";
+
+	/**
+	 * The account which receives all the fee payments.
+	 */
+	
+	private static String FEES_RECIPIENT;
+	static {
+		try {
+			FEES_RECIPIENT = URLEncoder.encode("fees_1269271952_biz@portapayments.com", "UTF-8");
+		} catch(Exception ex) {
+			FEES_RECIPIENT = "fees_1269271952_biz@portapayments.com";			
+		}
+	}
+	
+	/**
+	 * The URL the user is sent to after payments have been approved.
+	 */
+	
+	private static String PAY_OK_URL;
+	static {
+		try {
+			PAY_OK_URL = URLEncoder.encode("http://appengine.portapayments.com/payOK.html", "UTF-8");
+		} catch(Exception ex) {
+			PAY_OK_URL = "http://appengine.portapayments.com/payOK.html";
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	
+	private static String PAY_CANCELLED_URL;
+	static {
+		try {
+			PAY_CANCELLED_URL = URLEncoder.encode("http://appengine.portapayments.com/payCancelled.html", "UTF-8");
+		} catch(Exception ex) {
+			PAY_CANCELLED_URL = "http://appengine.portapayments.com/payCancelled.html";
+		}
+	}
+	
+	/**
+	 * Method to make a payment between a sender and receiver
+	 * @throws IOException 
+	 * 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 */
+	
+	public static String getPaymentRedirect(final PaymentRequest request, final String senderIPAddress) 
+		throws IOException {
+		return getPaymentRedirect(null, request, request.getAmount(), senderIPAddress);
+	}
 
 	/**
 	 * Method to make a payment between a sender and receiver
@@ -31,9 +91,9 @@ public class PayPal {
 	 * @throws ClientProtocolException 
 	 */
 	
-	public static String makePayment(final String sender, final PaymentRequest request) 
+	public static String getPaymentRedirect(final String sender, final PaymentRequest request, final String senderIPAddress) 
 		throws IOException {
-		return makePayment(sender, request, request.getAmount());
+		return getPaymentRedirect(sender, request, request.getAmount(), senderIPAddress);
 	}
 
 	/**
@@ -43,59 +103,103 @@ public class PayPal {
 	 * @throws ClientProtocolException 
 	 */
 	
-	public static String makePayment(final String sender, final PaymentRequest request, final String amountString ) 
+	public static String getPaymentRedirect(final String sender, final PaymentRequest request, 
+			final long amount, final String senderIPAddress) 
 		throws IOException {
-		double amount = Double.parseDouble(amountString)*100;
-		amount = Math.ceil(amount);
-		amount /= 100;
+		long fees = amount/400;
+		if(fees <= 1) {
+			fees++;
+		}
 		
 		Properties headers = new Properties();		
-		headers.put("X-PAYPAL-SECURITY-USERID", "payments_api1.funkyandroid.com"); 
-		headers.put("X-PAYPAL-SECURITY-PASSWORD","8PHXACWXATXPW9QA"); 
-		headers.put("X-PAYPAL-SECURITY-SIGNATURE","A3F8ibcD.y4vlg9hgBrTNX-nZaVPAF0lgltCEaVuHALO5vzjj6fhxS8I");
+		headers.put("X-PAYPAL-SECURITY-USERID", "fees_1269271952_biz_api1.portapayments.com"); 
+		headers.put("X-PAYPAL-SECURITY-PASSWORD","1269271966"); 
+		headers.put("X-PAYPAL-SECURITY-SIGNATURE","Al9Hkv5q.OAYUs-uvhYKQIFnf1nGADCHk2izI4Wim9rQSxb0LJa.NzVL");
 		headers.put("X-PAYPAL-REQUEST-DATA-FORMAT", "NV"); 
 		headers.put("X-PAYPAL-RESPONSE-DATA-FORMAT", "NV");  
 		headers.put("X-PAYPAL-APPLICATION-ID", "APP-80W284485P519543T");
-		
 
 		StringBuilder requestBody = new StringBuilder();
-        requestBody.append("senderEmail=");
-        requestBody.append(sender);  
-		requestBody.append("&actionType=PAY&currencyCode=");
+		if(sender != null) {
+	        requestBody.append("senderEmail=");
+	        requestBody.append(sender);
+	        requestBody.append('&');
+		}
+		requestBody.append("actionType=PAY&currencyCode=");
 		requestBody.append(request.getCurrency());
 		requestBody.append("&feesPayer=EACHRECEIVER");
 		
+		requestBody.append("&receiverList.receiver(0).primary=true");
 		requestBody.append("&receiverList.receiver(0).email=");
-		requestBody.append(request.getRecipient());
+		requestBody.append(FEES_RECIPIENT);
 		requestBody.append("&receiverList.receiver(0).amount=");
-		requestBody.append(amount);
+		addAmountFromLong(requestBody, amount);
 		
-		double fees = (amount*100)/400;
-		fees = Math.ceil(fees);
-		fees /= 100;
+		for(int i = 0 ; i < request.getRecipients().size() ; i++) {
+			final int paypalIdx = i+1;
+			PaymentRecipient recipient = request.getRecipients().get(i);
+			requestBody.append("&receiverList.receiver(");
+			requestBody.append(paypalIdx);
+			requestBody.append(").email=");
+			requestBody.append(URLEncoder.encode(recipient.getRecipient(), "UTF-8"));
+			requestBody.append("&receiverList.receiver(");
+			requestBody.append(paypalIdx);
+			requestBody.append(").amount=");
+			addAmountFromLong(requestBody, amount-fees);			
+			requestBody.append("&receiverList.receiver(");
+			requestBody.append(paypalIdx);
+			requestBody.append(").primary=false");
+		}
 		
-		requestBody.append("&receiverList.receiver(1).email=payments@funkyandroid.com&receiverList.receiver(1).amount=");
-		requestBody.append(fees);
-		requestBody.append("&receiverList.receiver(1).primary=false&returnUrl=http://appengine.portapayments.mobi/ppm/PayOK.jsp");
-		requestBody.append("&cancelUrl=http://appengine.portapayments.mobi/ppm/PayCancelled.jsp");
+		requestBody.append("&returnUrl=");
+		requestBody.append(PAY_OK_URL);
+		requestBody.append("&cancelUrl=");
+		requestBody.append(PAY_CANCELLED_URL);
 		requestBody.append("&requestEnvelope.errorLanguage=en_US");
-		requestBody.append("&clientDetails.ipAddress=127.0.0.1");
-		requestBody.append("&memo="+request.getMemo());
+		requestBody.append("&clientDetails.ipAddress=");
+		requestBody.append(senderIPAddress);
+		if(request.getMemo() != null) {
+			requestBody.append("&memo=");
+			requestBody.append(URLEncoder.encode(request.getMemo(), "UTF-8"));
+		}
 		requestBody.append("&clientDetails.applicationId=PortaPayments");
         
-        Map<String,String> results = postData(headers, requestBody.toString());
+		System.out.println(requestBody.toString());
+        final Map<String,String> results = postData(headers, requestBody.toString());
         if(results == null) {
         	throw new PayPalException("PayPal was unable to start the transaction.");
         }
         
         final String ack = results.get("responseEnvelope.ack");
         if(ack != null && "Failure".equals(ack)) {
-        	throw new PayPalExceptionWithErrorCode("PayPal generated an error ", results.get("error(0).errorId"));
+        	StringBuilder errorMessage = new StringBuilder("PayPal generated an error");
+        	String errorMessageText = results.get("error(0).message");
+        	if(errorMessageText != null) {
+        		errorMessage.append(" : ");
+        		errorMessage.append(errorMessageText);
+        	}
+        	throw new PayPalExceptionWithErrorCode(errorMessage.toString(), results.get("error(0).errorId"));
         }
         
-        return results.get("payKey");
+        final String payKey = results.get("payKey");
+        return PayPal.PAY_URL_STUB+payKey;
 	}
 	
+	/**
+	 * Adds an amount to a string buffer.
+	 * 
+	 */
+	
+	private static void addAmountFromLong(final StringBuilder builder, final long amount) {
+		builder.append(amount / 100);
+		builder.append('.');
+		
+		long minorAmount = amount % 100;
+		if(minorAmount < 10) {
+			builder.append('0');
+		}
+		builder.append(minorAmount);
+	}
 
 	public static Map<String,String> postData(final Properties headers, final String data) 
 		throws IOException {

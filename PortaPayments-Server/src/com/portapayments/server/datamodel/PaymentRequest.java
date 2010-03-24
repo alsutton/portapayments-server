@@ -1,9 +1,13 @@
 package com.portapayments.server.datamodel;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -33,29 +37,30 @@ public class PaymentRequest {
      * The payment gateway to use for this payment
      */
     
-    private PaymentGateway gateway;
+    private String gateway;
     
     /**
      * The email address of the recipient
      */
     
-    private String recipient;
+    @OneToMany(cascade=CascadeType.ALL)
+    private List<PaymentRecipient> recipients;
 
     /**
      * The amount his recipient will receive
      */
     
-    private String amount;
+    private Long amount;
 
 	public Key getKey() {
 		return key;
 	}
 
-	public PaymentGateway getGateway() {
+	public String getGateway() {
 		return gateway;
 	}
 
-	public void setGateway(PaymentGateway gateway) {
+	public void setGateway(final String gateway) {
 		this.gateway = gateway;
 	}
 
@@ -78,20 +83,20 @@ public class PaymentRequest {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-
-	public String getRecipient() {
-		return recipient;
+	
+	public List<PaymentRecipient> getRecipients() {
+		return recipients;
 	}
 
-	public void setRecipient(String recipient) {
-		this.recipient = recipient;
+	public void setRecipients(List<PaymentRecipient> recipients) {
+		this.recipients = recipients;
 	}
 
-	public String getAmount() {
+	public Long getAmount() {
 		return amount;
 	}
 
-	public void setAmount(String amount) {
+	public void setAmount(Long amount) {
 		this.amount = amount;
 	}
 }

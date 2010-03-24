@@ -3,6 +3,8 @@ package com.portapayments.server;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -10,24 +12,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.portapayments.server.datamodel.PaymentRecipient;
 import com.portapayments.server.datamodel.PaymentRequest;
-import com.portapayments.server.datamodel.Recipient;
 import com.portapayments.server.utils.BitlyUtils;
 import com.portapayments.server.utils.EMF;
 
 public class CreateUniversalCodeServlet extends HttpServlet {
 
 	/**
+	 * The PayPal Gateway
+	 */
+	
+	private String PAYPAL_GATEWAY = "PayPal";
+	
+	/**
 	 * The URL for a blank image
 	 */
 	
 	private static final String BLANK_IMAGE_URL = "http://static.portapayments.com/images/blankcode.png";
-	
-	/**
-	 * Character array for quick number to character conversion.
-	 */
-	
-	private static final char[] NUMBER_CHARS = { '0', '1', '2', '3', '4', '5' };
 	
 	/**
 	 * Generated serial number
@@ -63,44 +65,36 @@ public class CreateUniversalCodeServlet extends HttpServlet {
 				paymentRequest.setMemo("Paid via PortaPayments");
 			}
 
-			boolean foundData = false;
-			
-			final EntityManager em = EMF.get().createEntityManager();
-			em.persist(paymentRequest);
-			em.flush();
-			
-			StringBuilder amountParam = new StringBuilder(2);
-			amountParam.append("a0");
-			StringBuilder recipientParam = new StringBuilder(2);
-			recipientParam.append("r0");
-			for(int i = 0  ; i < 6 ; i++ ) {
-				amountParam.setCharAt(1, NUMBER_CHARS[i]);
-				String amount = request.getParameter(amountParam.toString());
-				if(amount == null || amount.length() == 0) {
-					continue;
-				}	
-				
-				recipientParam.setCharAt(1, NUMBER_CHARS[i]);
-				String recipient = request.getParameter(recipientParam.toString());
-				if(recipient == null || recipient.length() == 0) {
-					continue;
-				}	
-
-				Recipient paymentRecipient = new Recipient();
-				paymentRecipient.setAmount(amount);
-				paymentRecipient.setEmailAddress(recipient);
-				paymentRecipient.setPaymentRequest(paymentRequest);
-				em.persist(recipient);
-				foundData = true;
-			}
-			
-			if( !foundData ) {
+			String recipient = request.getParameter("r0");
+			if( recipient == null || recipient.length() ==0 ) {
 				log("No data found");
 				response.sendRedirect(BLANK_IMAGE_URL);
 				return;
 			}
+			
+			PaymentRecipient paymentRecipient = new PaymentRecipient();
+			paymentRecipient.setRecipient(recipient);
 
-			em.flush();
+			String amount = request.getParameter("a0");
+			if(amount != null && amount.length() >= 0) {
+				long amountValue = calculateAmount(amount);
+				paymentRecipient.setAmount(amountValue);
+				paymentRequest.setAmount(amountValue);
+			}	
+
+			List<PaymentRecipient> recipients = new ArrayList<PaymentRecipient>();
+			recipients.add(paymentRecipient);
+
+			paymentRequest.setRecipients(recipients);
+			paymentRequest.setGateway(PAYPAL_GATEWAY);
+				
+			final EntityManager em = EMF.get().createEntityManager();
+			try {				
+				em.persist(paymentRequest);
+			} finally {
+				em.close();
+			}
+	
 			final String url = BitlyUtils.getShortenedURL(paymentRequest);
 			final String encodedData = URLEncoder.encode(url, "UTF-8");
 			final StringBuilder googleChartsRedirect = new StringBuilder(256);
@@ -111,5 +105,28 @@ public class CreateUniversalCodeServlet extends HttpServlet {
 			log("Error during code generation", e);
 			throw new ServletException( e );
 		}
+	}
+
+	/**
+	 * Converts a string amount into a 
+	 * @param amount
+	 * @return
+	 */
+	private Long calculateAmount(String amount) {
+		int pointIdx = amount.indexOf('.');
+		if(pointIdx == -1) {
+			long value = Long.parseLong(amount);
+			return value * 100;
+		}
+		
+		String major = amount.substring(0, pointIdx);
+		String minor = amount.substring(pointIdx+1);
+		if( minor.length() > 2) {
+			throw new RuntimeException("2 digit minor values only");
+		}
+		
+		long value = Long.parseLong(major) * 100;
+		value += Long.parseLong(minor);
+		return value;
 	}
 }

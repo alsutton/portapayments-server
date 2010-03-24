@@ -37,7 +37,7 @@ public class BitlyUtils {
 	 * The prefix for payment requests.
 	 */
 	
-	private static final String PAYMENT_URL_PREFIX = "http://appengine.portapayments.com/Pay";
+	private static final String PAYMENT_URL_PREFIX = "http://appengine.portapayments.com/PayUniversalCode";
 
 	/**
 	 * Private constructor to prevent instanciation.
@@ -59,6 +59,7 @@ public class BitlyUtils {
 		url.append(pr.getKey().getId());
 		url.append("&k=");
 		url.append(URLEncoder.encode(pr.getKey().getKind(),"UTF-8"));
+		System.out.println(url);
 		return getShortenedURL(url.toString());
 	}
 	
