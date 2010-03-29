@@ -107,7 +107,7 @@ public class PayPal {
 			final long amount, final String senderIPAddress) 
 		throws IOException {
 		long fees = amount/400;
-		if(fees <= 1) {
+		if(fees < 2) {
 			fees++;
 		}
 		
@@ -129,27 +129,18 @@ public class PayPal {
 		requestBody.append(request.getCurrency());
 		requestBody.append("&feesPayer=EACHRECEIVER");
 		
-		requestBody.append("&receiverList.receiver(0).primary=true");
-		requestBody.append("&receiverList.receiver(0).email=");
-		requestBody.append(FEES_RECIPIENT);
-		requestBody.append("&receiverList.receiver(0).amount=");
-		addAmountFromLong(requestBody, amount);
 		
-		for(int i = 0 ; i < request.getRecipients().size() ; i++) {
-			final int paypalIdx = i+1;
-			PaymentRecipient recipient = request.getRecipients().get(i);
-			requestBody.append("&receiverList.receiver(");
-			requestBody.append(paypalIdx);
-			requestBody.append(").email=");
-			requestBody.append(URLEncoder.encode(recipient.getRecipient(), "UTF-8"));
-			requestBody.append("&receiverList.receiver(");
-			requestBody.append(paypalIdx);
-			requestBody.append(").amount=");
-			addAmountFromLong(requestBody, amount-fees);			
-			requestBody.append("&receiverList.receiver(");
-			requestBody.append(paypalIdx);
-			requestBody.append(").primary=false");
-		}
+		PaymentRecipient recipient = request.getRecipients().get(0);
+		requestBody.append("&receiverList.receiver(0).email=");
+		requestBody.append(URLEncoder.encode(recipient.getRecipient(), "UTF-8"));
+		requestBody.append("&receiverList.receiver(0).amount=");
+		addAmountFromLong(requestBody, amount);			
+		requestBody.append("&receiverList.receiver(0).primary=true");
+		requestBody.append("&receiverList.receiver(1).email=");
+		requestBody.append(FEES_RECIPIENT);
+		requestBody.append("&receiverList.receiver(1).amount=");
+		addAmountFromLong(requestBody, fees);
+		requestBody.append("&receiverList.receiver(1).primary=false");
 		
 		requestBody.append("&returnUrl=");
 		requestBody.append(PAY_OK_URL);
