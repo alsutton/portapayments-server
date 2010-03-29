@@ -59,7 +59,6 @@ public class BitlyUtils {
 		url.append(pr.getKey().getId());
 		url.append("&k=");
 		url.append(URLEncoder.encode(pr.getKey().getKind(),"UTF-8"));
-		System.out.println(url);
 		return getShortenedURL(url.toString());
 	}
 	
@@ -98,14 +97,5 @@ public class BitlyUtils {
 		} finally {
 			in.close();
 		}
-	}
-	
-	/**
-	 * Test harness
-	 * @throws IOException 
-	 */
-	
-	public static final void main(String[] args) throws IOException {
-		System.out.println(getShortenedURL("http://www.alsutton.com/ "));
 	}
 }
