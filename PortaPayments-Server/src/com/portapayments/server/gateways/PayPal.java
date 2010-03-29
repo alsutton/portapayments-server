@@ -108,7 +108,7 @@ public class PayPal {
 		throws IOException {
 		long fees = amount/400;
 		if(fees < 2) {
-			fees++;
+			fees = 2;
 		}
 		
 		Properties headers = new Properties();		
@@ -155,7 +155,6 @@ public class PayPal {
 		}
 		requestBody.append("&clientDetails.applicationId=PortaPayments");
         
-		System.out.println(requestBody.toString());
         final Map<String,String> results = postData(headers, requestBody.toString());
         if(results == null) {
         	throw new PayPalException("PayPal was unable to start the transaction.");
@@ -231,7 +230,7 @@ public class PayPal {
 
 			return getResults(reader);
 		} catch (Exception e) {
-			System.out.println(e);
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Error during post", e);
 		} finally {
 
 			try {
