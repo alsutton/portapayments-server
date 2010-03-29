@@ -6,7 +6,8 @@
 <link href="http://static.portapayments.com/css/desktop.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 function generateCode() {
- document.all.codeimage.src = 'CreateUniversalCode?c='+document.forms[0].c.value+
+	 document.all.codeimage.src = 'http://static.portapayments.com/images/loading.gif';
+	 document.all.codeimage.src = 'CreateUniversalCode?c='+document.forms[0].c.value+
 								'&a0='+document.forms[0].a0.value+'&r0='+document.forms[0].r0.value;
 }
 
@@ -30,71 +31,47 @@ function clear(id)
 		<td bgcolor="336699" class="strapline">Making Payments Portable</td>
 	</tr>
 </table>
-<div class="mobilelink">[<a href="http://portapayments.mobi">Mobile Version</a>]</div>
-<div class="colmask">
-<div class="colleft">
-<div class="col1wrap">
-<div class="col1">
-<h3>What is this?</h3>
-<p>PortaPayments is a free "Scan &amp; Pay" solution which allows customers to purchase your goods by scanning a 3D bar code with their 'phone.</p>
-
-<p>You can generate PortaPayments codes using the code generator on the right or the on-phone application and include them in Advertising material, Invoices, or even put them in the window of a traditional bricks and mortar store so people can buy your goods even when your store is closed.</p>
-
-<p>You can see a demonstration of PortaPayments in action in the video below, and if you'd like to help support the development of PortaPayments please vote for it in the PayPalX Developers Challenge by following the voting instructions at <a href="http://bit.ly/9ajgbu" target="_blank">http://bit.ly/9ajgbu</a>.
-If you'd like some more information please see <a href="faq.html">the frequently asked questions page</a>.</p>
-
-<center><object width="560" height="340"><param name="movie" value="http://www.youtube.com/v/sOYiADJWG9I&hl=en_GB&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/sOYiADJWG9I&hl=en_GB&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="560" height="340"></embed></object></center>
-</div>
-</div>
-<div class="col2">
-<div class="downloads">
-	<div class="side-title">Downloads</div>
-	<p><a href="http://static.portapayments.com/PortaPayments.apk">Android Application</a></p>
-</div>
-<div class="codegen">
-	<div class="side-title">Code Generator</div>
-	<form onSubmit="generateCode(); return true;" name="genform">
-		<p>Currency<br/>
-		<select name="c">
-			<option value="USD">U.S. Dollar</option>
-			<option value="EUR">Euro</option>
-			<option value="GBP">Pounds Sterling</option>
-			<option value="AUD">Australian Dollar</option>
-			<option value="CAD">Canadian Dollar</option>
-			<option value="CZK">Czech Koruna</option>
-			<option value="DKK">Danish Krone</option>
-			<option value="HKD">Hong Kong Dollar</option>
-			<option value="HUF">Hungarian Forint</option>
-			<option value="ILS">Israeli New Sheqel</option>
-			<option value="JPY">Japanese Yen</option>
-			<option value="MXN">Mexican Peso</option>
-			<option value="NOK">Norwegian Krone</option>
-			<option value="NZD">New Zealand Dollar</option>
-			<option value="PHP">Philippine Peso</option>
-			<option value="PLN">Polish Zloty</option>
-			<option value="SGD">Singapore Dollar</option>
-			<option value="SEK">Swedish Krona</option>
-			<option value="CHF">Swiss Franc</option>
-			<option value="TWD">Taiwan New Dollar</option>
-			<option value="THB">Thai Baht</option>
-		</select></p>
-		<table width="100%">
-		<tr>
-			<td colspan="2">Recipient, Amount</td>
-		</tr>
-		<tr>
-			<td><input type="text" name="r0" value="me@my.com" size="15"/>, <input type="text" name="a0" value="1.23" align="right" size="4"></td>
-			<td>
-				<a href="javascript:clear(0)" id="clear_0" style="text-decoration:none">x</a>
-			</td>
-		</tr>
-		</table>
-		<p><a href="javascript:generateCode()">Generate Code</a></p>
-	</form>
-	<img width="192" height="192" id="codeimage" src="http://static.portapayments.com/images/blankcode.png"/>
-</div>
-<p>&nbsp;</p>
-</div>
+<div style="padding: 50px">
+<div class="roundedcornr_box_456447">
+   <div class="roundedcornr_top_456447"><div></div></div>
+      <div class="roundedcornr_content_456447">
+      	<center>
+	      	<h3>Universal Code Generator</h3>
+	      	<p><b>Please note :</b> There is a 0.25% fee charged each time a payment is made via a universal code,
+	      	with the minimum being 2 minor units of currency (e.g. 2 cents).</p>
+			<form onSubmit="generateCode(); return true;" name="genform">
+				<table>
+					<tr>
+						<td align="right">Recipient :</td>
+						<td><input type="text" name="r0" value="me@my.com" size="20"/></td>
+						<td rowspan="4">
+							<img width="192" height="192" id="codeimage" src="http://static.portapayments.com/images/blankcode.png" style="border: 1px solid black"/>
+						</td>
+					</tr>
+					<tr>
+						<td align="right">Currency :</td>
+						<td>
+							<select name="c">
+								<option value="USD">U.S. Dollar</option>
+								<option value="EUR">Euro</option>
+								<option value="GBP">Pounds Sterling</option>
+								<option value="CAD">Canadian Dollar</option>
+								<option value="MXN">Mexican Peso</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td align="right">Amount :</td>
+						<td><input type="text" name="a0" value="1.23" align="right" size="6"></td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center"><a href="javascript:generateCode()">Generate Code -&gt;</a></td>
+					</tr>								
+				</table>
+			</form>
+	    </center>
+      </div>
+   <div class="roundedcornr_bottom_456447"><div></div></div>
 </div>
 </div>
 <div class="footer">PortaPayments is owned and operated by <a href="http://funkyandroid.com">Funky Android Ltd.</a><br/>
