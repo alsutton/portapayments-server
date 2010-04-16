@@ -47,6 +47,7 @@ public class PayUniversalCodeServlet extends HttpServlet {
 			return;
 		}
 		
+		String email = "<UNKNOWN>";
 		EntityManager em = EMF.get().createEntityManager();
 		try {
 			Key paymentKey = KeyFactory.createKey(k, Long.parseLong(i));
@@ -57,6 +58,7 @@ public class PayUniversalCodeServlet extends HttpServlet {
 				return;				
 			}
 			
+			email = paymentRequest.getRecipients().get(0).getRecipient();
 			long amount;
 			if(paymentRequest.getAmount() == null) {
 					final String amountParameter = request.getParameter("amount");
@@ -78,7 +80,7 @@ public class PayUniversalCodeServlet extends HttpServlet {
 
 			response.sendRedirect(PayPal.getPaymentRedirect(u, paymentRequest, amount, request.getRemoteAddr()));
 		} catch(PayPalExceptionWithErrorCode ex) {
-			super.log("Exception for k:"+k+" + i:"+i+" c : "+ex.getErrorCode(), ex);
+			super.log("Exception for k:"+k+" + i:"+i+" c : "+ex.getErrorCode()+" to:"+email, ex);
 			response.sendRedirect(ERROR_URL);			
 		} catch(Exception ex) {
 			super.log("Exception for k:"+k+" + i:"+i, ex);

@@ -23,13 +23,13 @@ public class PayPal {
 	 * The endpoint URL for paypal requests.
 	 */
 	
-	private static final String PAYPAL_URL = "https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
+	private static final String PAYPAL_URL = "https://svcs.paypal.com/AdaptivePayments/Pay";
 
 	/**
 	 * The URL stub for passing the payment authentication to PayPal
 	 */
 
-	private final static String PAY_URL_STUB = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey=";
+	private final static String PAY_URL_STUB = "https://www.paypal.com/webscr?cmd=_ap-payment&paykey=";
 
 	/**
 	 * The account which receives all the fee payments.
@@ -38,9 +38,9 @@ public class PayPal {
 	private static String FEES_RECIPIENT;
 	static {
 		try {
-			FEES_RECIPIENT = URLEncoder.encode("fees_1269271952_biz@portapayments.com", "UTF-8");
+			FEES_RECIPIENT = URLEncoder.encode("payments@funkyandroid.com", "UTF-8");
 		} catch(Exception ex) {
-			FEES_RECIPIENT = "fees_1269271952_biz@portapayments.com";			
+			FEES_RECIPIENT = "payments@funkyandroid.com";			
 		}
 	}
 	
@@ -112,12 +112,12 @@ public class PayPal {
 		}
 		
 		Properties headers = new Properties();		
-		headers.put("X-PAYPAL-SECURITY-USERID", "fees_1269271952_biz_api1.portapayments.com"); 
-		headers.put("X-PAYPAL-SECURITY-PASSWORD","1269271966"); 
-		headers.put("X-PAYPAL-SECURITY-SIGNATURE","Al9Hkv5q.OAYUs-uvhYKQIFnf1nGADCHk2izI4Wim9rQSxb0LJa.NzVL");
+		headers.put("X-PAYPAL-SECURITY-USERID", "payments_api1.funkyandroid.com"); 
+		headers.put("X-PAYPAL-SECURITY-PASSWORD","8PHXACWXATXPW9QA"); 
+		headers.put("X-PAYPAL-SECURITY-SIGNATURE","A3F8ibcD.y4vlg9hgBrTNX-nZaVPAF0lgltCEaVuHALO5vzjj6fhxS8I");
 		headers.put("X-PAYPAL-REQUEST-DATA-FORMAT", "NV"); 
 		headers.put("X-PAYPAL-RESPONSE-DATA-FORMAT", "NV");  
-		headers.put("X-PAYPAL-APPLICATION-ID", "APP-80W284485P519543T");
+		headers.put("X-PAYPAL-APPLICATION-ID", "APP-8AR47415GG027162L");
 
 		StringBuilder requestBody = new StringBuilder();
 		if(sender != null) {
@@ -253,6 +253,8 @@ public class PayPal {
 
 		URL url = new URL(endpoint);
 		connection = (HttpURLConnection) url.openConnection();
+		connection.setConnectTimeout(10000);
+		connection.setReadTimeout(10000);
 		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
 
