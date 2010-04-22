@@ -317,6 +317,57 @@ public class PayPal {
 	 */
 	
 	public static final class PayPalExceptionWithErrorCode extends PayPalException {
+		
+		private static final Map<String, String> errorMessages = new HashMap<String,String>();
+		static {
+			errorMessages.put("500000","There is a system error");
+			errorMessages.put("520002","Internal error");
+			errorMessages.put("520003","User name/password is incorrect");
+			errorMessages.put("520005","Merchant account is locked");
+			errorMessages.put("520006","This call is not defined in the database");	
+			errorMessages.put("520009","PayPal did not recognise the payment recipient.");	
+			errorMessages.put("529038","There was an error while making this payment");	
+			errorMessages.put("539012","The preapproval key has not been authorized yet");	
+			errorMessages.put("539041","The email account is based in a country that is not enabled to receive payments");	
+			errorMessages.put("539043","The email account is based in a country that is not enabled to send payments");	
+			errorMessages.put("540031","You don't have permission to may the payment.");
+			errorMessages.put("559044","Account setting on the receiver prohibited the payment");	
+			errorMessages.put("560027","The argument value is unsupported");	
+			errorMessages.put("569000","Split payments are not supported at this time");	
+			errorMessages.put("569013","The preapproval key has been canceled");	
+			errorMessages.put("569016","Preapproval PIN functionality is not enabled");	
+			errorMessages.put("569017","The preapproval key has been suspended");	
+			errorMessages.put("569018","Preapproved payments have been disabled");	
+			errorMessages.put("569019","The preapproval has been suspended due to too many PIN failures");	
+			errorMessages.put("569042","The email account is not confirmed by PayPal");	
+			errorMessages.put("579007","The maximum number of receivers is 6");	
+			errorMessages.put("579010","If a preapproval key is specified, the sender’s email address must be, too");	
+			errorMessages.put("579014","The preapproval key specifies a different sender than the payment request");	
+			errorMessages.put("579017","The amount for the primary receiver must be greater than or equal to the total of other chained receiver amounts");	
+			errorMessages.put("579024","The preapproval key cannot be used before the start date or after the end date");	
+			errorMessages.put("579025","The preapproval key cannot be used on this weekday");	
+			errorMessages.put("579026","The preapproval key cannot be used on this day of the month");	
+			errorMessages.put("579027","The preapproval key specifies a different currency than the payment request");	
+			errorMessages.put("579028","The payment amount exceeds the maximum amount per payment");	
+			errorMessages.put("579030","The number of payments made this period exceeds the maximum number of payments per period");	
+			errorMessages.put("579031","The total amount of all payments exceeds the maximum total amount for all payments");	
+			errorMessages.put("579033","The sender and each receiver must have different accounts");	
+			errorMessages.put("579040","The receivers cannot belong to the same PayPal account");	
+			errorMessages.put("579042","The tracking ID already exists and cannot be duplicated");	
+			errorMessages.put("579045","The email account exceeds the receiving limit");	
+			errorMessages.put("579047","The email account exceeds the purse limit");	
+			errorMessages.put("579048","The email account exceeds the sending limit");	
+			errorMessages.put("580001","Invalid request");	
+			errorMessages.put("580023","Invalid request");
+			errorMessages.put("580027","The argument is unsupported");	
+			errorMessages.put("580028","A URL is malformed");	
+			errorMessages.put("580029","Invalid request");	
+			errorMessages.put("589009","This payment cannot be processed because no payment source is available");	
+			errorMessages.put("589023","If a fractional amount is rounded due to currency conversion, funds could be lost");	
+			errorMessages.put("589039","The email address is invalid. It may not be registered in PayPal’s system yet.");
+		}
+		
+		
 		/**
 		 * Generated serial ID.
 		 */
@@ -339,6 +390,16 @@ public class PayPal {
 		 */
 		public String getErrorCode() {
 			return errorCode;
+		}
+		
+		/**
+		 * Get the PayPal translated error message
+		 */
+		public String getTranslatedMessage() {
+			if(errorCode == null) {
+				return null;
+			}
+			return errorMessages.get(errorCode);
 		}
 	}	
 

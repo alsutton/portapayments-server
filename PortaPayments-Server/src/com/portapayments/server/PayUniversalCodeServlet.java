@@ -27,7 +27,7 @@ public class PayUniversalCodeServlet extends HttpServlet {
 	/**
 	 * The URL to send users to if a payment isn't valid.
 	 */
-	private static final String ERROR_URL = "http://appengine.portapayments.com/InvalidPayment.html";
+	private static final String ERROR_URL = "http://appengine.portapayments.com/InvalidPayment.jsp";
 
 	/**
 	 * The URL to send users to if a payment isn't valid.
@@ -80,8 +80,14 @@ public class PayUniversalCodeServlet extends HttpServlet {
 
 			response.sendRedirect(PayPal.getPaymentRedirect(u, paymentRequest, amount, request.getRemoteAddr()));
 		} catch(PayPalExceptionWithErrorCode ex) {
-			super.log("Exception for k:"+k+" + i:"+i+" c : "+ex.getErrorCode()+" to:"+email, ex);
-			response.sendRedirect(ERROR_URL);			
+			super.log("Exception for k:"+k+" + i:"+i+" c : "+ex.getErrorCode()+" to:"+email);
+			final String payPalError = ex.getTranslatedMessage();
+			if(payPalError == null) {
+				log("Unknown error code "+ex.getErrorCode());
+			} else {
+				request.setAttribute("ppError", payPalError);
+			}
+			request.getRequestDispatcher("/InvalidPayment.jsp").forward(request, response);
 		} catch(Exception ex) {
 			super.log("Exception for k:"+k+" + i:"+i, ex);
 			response.sendRedirect(ERROR_URL);

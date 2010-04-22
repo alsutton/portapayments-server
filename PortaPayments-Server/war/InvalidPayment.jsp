@@ -1,0 +1,41 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" isELIgnored ="false"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>PortaPayments - Making Payments Portable</title>
+<link href="http://static.portapayments.com/css/desktop.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td rowspan="2" width="79"><img src="http://static.portapayments.com/images/pp_qrcode.png" width="77" height="77"></td>
+		<td bgcolor="003366" class="title"><a href="http://www.portapayments.com/" style="text-decoration: none; color: white">PortaPayments</a></td>
+	</tr>
+	<tr>
+		<td bgcolor="336699" class="strapline">Making Payments Portable</td>
+	</tr>
+</table>
+<div style="padding: 50px">
+<div class="roundedcornr_box_456447">
+   <div class="roundedcornr_top_456447"><div></div></div>
+      <div class="roundedcornr_content_456447">
+      	<center>
+	      	<p>Unfortunately your request could not be processed.</p>
+	      	<%
+	      		final String reason = (String)request.getAttribute("ppError");
+	      		if(reason != null && !reason.isEmpty()) {
+	      	%>
+	      		<p>The reason for this is : <%=reason %></p>
+	      	<%
+	      		}
+	      	%>
+	      </center>
+      </div>
+   <div class="roundedcornr_bottom_456447"><div></div></div>
+</div>
+</div>
+<div class="footer">PortaPayments is owned and operated by <a href="http://funkyandroid.com">Funky Android Ltd.</a><br/>
+This website and its' contents are (c)Copyright 2010 Funky Android Ltd., All Rights Reserved.</div>
+</body>
+</html>
