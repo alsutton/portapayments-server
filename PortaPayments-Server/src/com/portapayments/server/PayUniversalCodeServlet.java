@@ -2,6 +2,8 @@ package com.portapayments.server;
 
 import java.io.IOException;
 import java.util.Currency;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -80,16 +82,16 @@ public class PayUniversalCodeServlet extends HttpServlet {
 
 			response.sendRedirect(PayPal.getPaymentRedirect(u, paymentRequest, amount, request.getRemoteAddr()));
 		} catch(PayPalExceptionWithErrorCode ex) {
-			super.log("Exception for k:"+k+" + i:"+i+" c : "+ex.getErrorCode()+" to:"+email);
 			final String payPalError = ex.getTranslatedMessage();
 			if(payPalError == null) {
-				log("Unknown error code "+ex.getErrorCode());
+				Logger.getAnonymousLogger().log(Level.SEVERE, "Unknown error during processing  k:"+k+" + i:"+i+" c: "+ex.getErrorCode()+" to:"+email);
 			} else {
+				Logger.getAnonymousLogger().log(Level.SEVERE, payPalError+" during processing  k:"+k+" + i:"+i+" c: "+ex.getErrorCode()+" to:"+email);
 				request.setAttribute("ppError", payPalError);
 			}
 			request.getRequestDispatcher("/InvalidPayment.jsp").forward(request, response);
 		} catch(Exception ex) {
-			super.log("Exception for k:"+k+" + i:"+i, ex);
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Exception for k:"+k+" + i:"+i, ex);
 			response.sendRedirect(ERROR_URL);
 		} finally {
 			em.close();
