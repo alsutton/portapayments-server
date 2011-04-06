@@ -29,7 +29,7 @@ public class PayUniversalCodeServlet extends HttpServlet {
 	/**
 	 * The URL to send users to if a payment isn't valid.
 	 */
-	private static final String ERROR_URL = "http://appengine.portapayments.com/InvalidPayment.jsp";
+	private static final String ERROR_URL = "http://portapayments.appspot.com/InvalidPayment.jsp";
 
 	/**
 	 * The URL to send users to if a payment isn't valid.

@@ -37,7 +37,7 @@ public class BitlyUtils {
 	 * The prefix for payment requests.
 	 */
 	
-	private static final String PAYMENT_URL_PREFIX = "http://appengine.portapayments.com/PayUniversalCode";
+	private static final String PAYMENT_URL_PREFIX = "http://portapayments.appspot.com/PayUniversalCode";
 
 	/**
 	 * Private constructor to prevent instanciation.

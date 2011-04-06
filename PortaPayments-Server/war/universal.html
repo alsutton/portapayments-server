@@ -7,7 +7,7 @@
 <script type="text/javascript">
 function generateCode() {
 	 document.all.codeimage.src = 'http://static.portapayments.com/images/loading.gif';
-	 document.all.codeimage.src = 'http://appengine.portapayments.com/CreateUniversalCode?c='+escape(document.forms[0].c.value)+
+	 document.all.codeimage.src = 'http://portapayments.appspot.com/CreateUniversalCode?c='+escape(document.forms[0].c.value)+
 								'&a0='+escape(document.forms[0].a0.value)+
 								'&r0='+escape(document.forms[0].r0.value)+
 								'&n='+escape(document.forms[0].n.value);

@@ -51,9 +51,9 @@ public class PayPal {
 	private static String PAY_OK_URL;
 	static {
 		try {
-			PAY_OK_URL = URLEncoder.encode("http://appengine.portapayments.com/payOK.html", "UTF-8");
+			PAY_OK_URL = URLEncoder.encode("http://portapayments.appspot.com/payOK.html", "UTF-8");
 		} catch(Exception ex) {
-			PAY_OK_URL = "http://appengine.portapayments.com/payOK.html";
+			PAY_OK_URL = "http://portapayments.appspot.com/payOK.html";
 		}
 	}
 	
@@ -64,9 +64,9 @@ public class PayPal {
 	private static String PAY_CANCELLED_URL;
 	static {
 		try {
-			PAY_CANCELLED_URL = URLEncoder.encode("http://appengine.portapayments.com/payCancelled.html", "UTF-8");
+			PAY_CANCELLED_URL = URLEncoder.encode("http://portapayments.appspot.com/payCancelled.html", "UTF-8");
 		} catch(Exception ex) {
-			PAY_CANCELLED_URL = "http://appengine.portapayments.com/payCancelled.html";
+			PAY_CANCELLED_URL = "http://portapayments.appspot.com/payCancelled.html";
 		}
 	}
 	
