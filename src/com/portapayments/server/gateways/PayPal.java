@@ -107,8 +107,8 @@ public class PayPal {
 			final long amount, final String senderIPAddress) 
 		throws IOException {
 		long fees = amount/400;
-		if(fees < 2) {
-			fees = 2;
+		if(fees < 10) {
+			fees = 10;
 		}
 		
 		Properties headers = new Properties();		
