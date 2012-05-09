@@ -14,6 +14,6 @@
 <img src="CreateCode?a0=<%=request.getParameter("a0")%>&c=<%=request.getParameter("c")%>&r0=<%=request.getParameter("r0")%>" width="192" height="192">
 </center>
 <div class="footer">PortaPayments is owned and operated by <a href="http://funkyandroid.com">Funky Android Ltd.</a><br/>
-This website and its' contents are (c)Copyright 2010 Funky Android Ltd., All Rights Reserved.</div>
+This website and its' contents are (c)Copyright 2010-2012 Funky Android Ltd., All Rights Reserved.</div>
 </body>
 </html>

@@ -14,6 +14,6 @@
 <p>Please enter a recipient, an amount, and select a currency.</p>
 </center>
 <div class="footer">PortaPayments is owned and operated by <a href="http://funkyandroid.com">Funky Android Ltd.</a><br/>
-This website and its' contents are (c)Copyright 2010 Funky Android Ltd., All Rights Reserved.</div>
+This website and its' contents are (c)Copyright 2010-2012 Funky Android Ltd., All Rights Reserved.</div>
 </body>
 </html>
