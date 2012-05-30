@@ -331,7 +331,7 @@ public class PayPal {
 			errorMessages.put("539041","The email account is based in a country that is not enabled to receive payments");	
 			errorMessages.put("539043","The email account is based in a country that is not enabled to send payments");	
 			errorMessages.put("540031","You don't have permission to may the payment.");
-			errorMessages.put("559044","Account setting on the receiver prohibited the payment");	
+			errorMessages.put("559044","Account setting on the receiver prohibited the payment (Is their account enabled for that currency)");	
 			errorMessages.put("560027","The argument value is unsupported");	
 			errorMessages.put("569000","Split payments are not supported at this time");	
 			errorMessages.put("569013","The preapproval key has been canceled");	
