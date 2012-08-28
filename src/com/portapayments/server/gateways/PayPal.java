@@ -73,9 +73,6 @@ public class PayPal {
 	/**
 	 * Method to make a payment between a sender and receiver
 	 * @throws IOException 
-	 * 
-	 * @throws IOException 
-	 * @throws ClientProtocolException 
 	 */
 	
 	public static String getPaymentRedirect(final PaymentRequest request, final String senderIPAddress) 
@@ -86,9 +83,6 @@ public class PayPal {
 	/**
 	 * Method to make a payment between a sender and receiver
 	 * @throws IOException 
-	 * 
-	 * @throws IOException 
-	 * @throws ClientProtocolException 
 	 */
 	
 	public static String getPaymentRedirect(final String sender, final PaymentRequest request, final String senderIPAddress) 
@@ -100,7 +94,6 @@ public class PayPal {
 	 * Method to make a payment between a sender and receiver
 	 * 
 	 * @throws IOException 
-	 * @throws ClientProtocolException 
 	 */
 	
 	public static String getPaymentRedirect(final String sender, final PaymentRequest request, 
@@ -217,7 +210,7 @@ public class PayPal {
 		
 		try {
 			OutputStream os = connection.getOutputStream();
-			os.write(data.toString().getBytes("UTF-8"));
+			os.write(data.getBytes("UTF-8"));
 			os.close();
 			int status = connection.getResponseCode();
 			if (status != 200) {
@@ -239,7 +232,6 @@ public class PayPal {
 				if (connection != null)
 					connection.disconnect();
 			} catch (Exception e) {
-				; // Do nothing
 			}
 
 		}
@@ -249,19 +241,17 @@ public class PayPal {
 
 	private static HttpURLConnection setupConnection(String endpoint,
 			Properties headers, Properties connectionProps) throws IOException {
-		HttpURLConnection connection = null;
-
 		URL url = new URL(endpoint);
-		connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setConnectTimeout(10000);
 		connection.setReadTimeout(10000);
 		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
 
 		Object[] keys = headers.keySet().toArray();
-		for (int i = 0; i < keys.length; i++) {
-			connection.setRequestProperty((String) keys[i],
-					(String) headers.get(keys[i]));
+        for(Object key : keys) {
+			connection.setRequestProperty((String) key,
+					(String) headers.get(key));
 		}
 
 		return connection;
@@ -341,7 +331,7 @@ public class PayPal {
 			errorMessages.put("569019","The preapproval has been suspended due to too many PIN failures");	
 			errorMessages.put("569042","The email account is not confirmed by PayPal");	
 			errorMessages.put("579007","The maximum number of receivers is 6");	
-			errorMessages.put("579010","If a preapproval key is specified, the senderÕs email address must be, too");	
+			errorMessages.put("579010","If a preapproval key is specified, the senders email address must be, too");
 			errorMessages.put("579014","The preapproval key specifies a different sender than the payment request");	
 			errorMessages.put("579017","The amount for the primary receiver must be greater than or equal to the total of other chained receiver amounts");	
 			errorMessages.put("579024","The preapproval key cannot be used before the start date or after the end date");	
@@ -364,7 +354,7 @@ public class PayPal {
 			errorMessages.put("580029","Invalid request");	
 			errorMessages.put("589009","This payment cannot be processed because no payment source is available");	
 			errorMessages.put("589023","If a fractional amount is rounded due to currency conversion, funds could be lost");	
-			errorMessages.put("589039","The email address is invalid. It may not be registered in PayPalÕs system yet.");
+			errorMessages.put("589039","The email address is invalid. It may not be registered in PayPals system yet.");
 		}
 		
 		
